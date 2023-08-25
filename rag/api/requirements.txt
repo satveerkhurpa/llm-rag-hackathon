@@ -1,0 +1,9 @@
+fastapi
+pydantic
+uvicorn
+numpy
+mangum
+langchain 
+opensearch-py 
+requests 
+requests-aws4auth
