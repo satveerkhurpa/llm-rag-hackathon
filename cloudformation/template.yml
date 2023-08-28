@@ -304,8 +304,6 @@ Resources:
             Principal:
               Service:
                 - "lambda.amazonaws.com"
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonS3FullAccess
       Policies:
         - PolicyDocument:
             Version: "2012-10-17"
@@ -321,13 +319,6 @@ Resources:
         - PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              - Sid: Logging
-                Action:
-                  - "logs:CreateLogGroup"
-                  - "logs:CreateLogStream"
-                  - "logs:PutLogEvents"
-                Effect: "Allow"
-                Resource: "*"
               - Sid: Bedrockaccess
                 Effect: Allow
                 Action:
