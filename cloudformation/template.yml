@@ -40,7 +40,6 @@ Metadata:
       
 Parameters:
   APIStage:
-    AllowedPattern: '^[a-zA-Z0-9]+$'
     Default: "/prod"
     Description: The stage from API Gateway
     Type: String  
@@ -86,18 +85,18 @@ Parameters:
     Type: String
     AllowedPattern: '[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+'
     Description: Name of the Lambda function for LLM Apps
-  # SageMakerNotebookName:
-  #   Default: aws-llm-rag-hackathon
-  #   Type: String
-  #   Description: Enter name of SageMaker Notebook instance. The notebook name must _not_ already exist in your AWS account/region.
-  #   MinLength: 1
-  #   MaxLength: 63
-  #   AllowedPattern: ^[a-z0-9](-*[a-z0-9])*
-  #   ConstraintDescription: Must be lowercase or numbers with a length of 1-63 characters.
-  # SageMakerIAMRole:
-  #   Description: Name of IAM role that will be created by this cloud formation template. The role name must _not_ already exist in your AWS account.
-  #   Type: String
-  #   Default: "LLMHackathonAppIAMRole"   
+  SageMakerNotebookName:
+    Default: aws-llm-rag-hackathon
+    Type: String
+    Description: Enter name of SageMaker Notebook instance. The notebook name must _not_ already exist in your AWS account/region.
+    MinLength: 1
+    MaxLength: 63
+    AllowedPattern: ^[a-z0-9](-*[a-z0-9])*
+    ConstraintDescription: Must be lowercase or numbers with a length of 1-63 characters.
+  SageMakerIAMRole:
+    Description: Name of IAM role that will be created by this cloud formation template. The role name must _not_ already exist in your AWS account.
+    Type: String
+    Default: "LLMHackathonAppIAMRole"   
 
   ApiStageName:
     Description: The APi Gateway API stage name
