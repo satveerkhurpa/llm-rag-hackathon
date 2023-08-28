@@ -76,12 +76,12 @@ Parameters:
     AllowedValues: [llm-rag-hackathon]
     Description: Name of the overall application, this is used while creating the ML model endpoint.
   LambdaFunctionName:
-    Default: LLMHackathonApp
+    Default: LLMRagapp
     Type: String
     AllowedPattern: '[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+'
     Description: Name of the Lambda function for LLM Apps
   APIGatewayName:
-    Default: LLMHackathonAPIGW
+    Default: LLMRagAPIGW
     Type: String
     AllowedPattern: '[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+'
     Description: Name of the Lambda function for LLM Apps
@@ -102,24 +102,6 @@ Parameters:
     Description: The APi Gateway API stage name
     Type: String
     Default: prod
-
-# Mappings: 
-#   RegionMap: 
-#     us-east-1:
-#       BUCKET: aws-blogs-artifacts-public
-#       KEY: "artifacts/ML-14328/function.zip"
-#     us-west-2:
-#       BUCKET: aws-bigdata-blog-replica-us-west-2
-#       KEY: "artifacts/ML-14328/function.zip"
-#     eu-west-1:
-#       BUCKET: aws-bigdata-blog-replica-eu-west-1
-#       KEY: "artifacts/ML-14328/function.zip"
-#     eu-west-2:
-#       BUCKET: aws-bigdata-blog-replica-eu-west-2
-#       KEY: "artifacts/ML-14328/function.zip"
-#     ap-northeast-1:
-#       BUCKET: aws-bigdata-blog-replica-ap-northeast-1
-#       KEY: "artifacts/ML-14328/function.zip"
 
 Resources:
   OpenSearchSecret:
