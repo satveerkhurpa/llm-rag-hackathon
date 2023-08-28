@@ -29,8 +29,30 @@ Metadata:
         default: API gateway name
       SageMakerNotebookName:
         default: Name of SageMaker Notebook Instance
+      APIStage:
+        default: The API stage in API gateway
+      BedrockEndPointUrl:
+        default: The url of the Bedrock endpoint
+      BedRockRegion:
+        default: The region of the Bedrock endpoint
+      ContainerImageURI:
+        default: The URI of the container Image from ECR
       
 Parameters:
+  APIStage:
+    AllowedPattern: '^[a-zA-Z0-9]+$'
+    Default: "/prod"
+    Description: The stage from API Gateway
+    Type: String  
+  BedrockEndPointUrl:
+    Description: The url of the bedrock endpoint
+    Type: String   
+  BedRockRegion:
+    Description: The region of the bedrock endpoint
+    Type: String    
+  ContainerImageURI:
+    Description: The uri of the container image from ECR
+    Type: String       
   OpenSearchUsername:
     AllowedPattern: '^[a-zA-Z0-9]+$'
     Default: opensearchuser
@@ -64,41 +86,41 @@ Parameters:
     Type: String
     AllowedPattern: '[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+'
     Description: Name of the Lambda function for LLM Apps
-  SageMakerNotebookName:
-    Default: aws-llm-rag-hackathon
-    Type: String
-    Description: Enter name of SageMaker Notebook instance. The notebook name must _not_ already exist in your AWS account/region.
-    MinLength: 1
-    MaxLength: 63
-    AllowedPattern: ^[a-z0-9](-*[a-z0-9])*
-    ConstraintDescription: Must be lowercase or numbers with a length of 1-63 characters.
-  SageMakerIAMRole:
-    Description: Name of IAM role that will be created by this cloud formation template. The role name must _not_ already exist in your AWS account.
-    Type: String
-    Default: "LLMHackathonAppIAMRole"   
+  # SageMakerNotebookName:
+  #   Default: aws-llm-rag-hackathon
+  #   Type: String
+  #   Description: Enter name of SageMaker Notebook instance. The notebook name must _not_ already exist in your AWS account/region.
+  #   MinLength: 1
+  #   MaxLength: 63
+  #   AllowedPattern: ^[a-z0-9](-*[a-z0-9])*
+  #   ConstraintDescription: Must be lowercase or numbers with a length of 1-63 characters.
+  # SageMakerIAMRole:
+  #   Description: Name of IAM role that will be created by this cloud formation template. The role name must _not_ already exist in your AWS account.
+  #   Type: String
+  #   Default: "LLMHackathonAppIAMRole"   
 
   ApiStageName:
     Description: The APi Gateway API stage name
     Type: String
     Default: prod
 
-Mappings: 
-  RegionMap: 
-    us-east-1:
-      BUCKET: aws-blogs-artifacts-public
-      KEY: "artifacts/ML-14328/function.zip"
-    us-west-2:
-      BUCKET: aws-bigdata-blog-replica-us-west-2
-      KEY: "artifacts/ML-14328/function.zip"
-    eu-west-1:
-      BUCKET: aws-bigdata-blog-replica-eu-west-1
-      KEY: "artifacts/ML-14328/function.zip"
-    eu-west-2:
-      BUCKET: aws-bigdata-blog-replica-eu-west-2
-      KEY: "artifacts/ML-14328/function.zip"
-    ap-northeast-1:
-      BUCKET: aws-bigdata-blog-replica-ap-northeast-1
-      KEY: "artifacts/ML-14328/function.zip"
+# Mappings: 
+#   RegionMap: 
+#     us-east-1:
+#       BUCKET: aws-blogs-artifacts-public
+#       KEY: "artifacts/ML-14328/function.zip"
+#     us-west-2:
+#       BUCKET: aws-bigdata-blog-replica-us-west-2
+#       KEY: "artifacts/ML-14328/function.zip"
+#     eu-west-1:
+#       BUCKET: aws-bigdata-blog-replica-eu-west-1
+#       KEY: "artifacts/ML-14328/function.zip"
+#     eu-west-2:
+#       BUCKET: aws-bigdata-blog-replica-eu-west-2
+#       KEY: "artifacts/ML-14328/function.zip"
+#     ap-northeast-1:
+#       BUCKET: aws-bigdata-blog-replica-ap-northeast-1
+#       KEY: "artifacts/ML-14328/function.zip"
 
 Resources:
   OpenSearchSecret:
@@ -112,7 +134,7 @@ Resources:
     Type: AWS::SageMaker::CodeRepository
     Properties:
       GitConfig:
-          RepositoryUrl: https://github.com/aws-samples/llm-apps-workshop
+          RepositoryUrl: https://github.com/satveerkhurpa/llm-rag-hackathon
 
   NotebookInstance:
     Type: AWS::SageMaker::NotebookInstance
@@ -159,10 +181,19 @@ Resources:
                   - "ecr:GetAuthorizationToken"
                   - "ec2:DescribeAvailabilityZones"
                 Resource: "*"
+              - Sid: ReadFromS3Bucket
+                Effect: Allow
+                Action:
+                  - "s3:*"
+                Resource: "arn:aws:s3:::arxiv-docs-21082003"
+              - Sid : BedrockAccess
+                Effect: Allow
+                Action:
+                  - "bedrock:*"
+                Resource: "*"
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
         - arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess
-        - arn:aws:iam::aws:policy/TranslateReadOnly
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -205,84 +236,6 @@ Resources:
         KmsKeyId: alias/aws/es
       DomainEndpointOptions:
         EnforceHTTPS: True
-
-  LLMEndpoint:
-    Type: "AWS::SageMaker::Endpoint"
-    Properties:
-      EndpointName: !Sub
-      - '${AppName}-flan-t5-xxl-endpoint-${RandomGUID}'
-      - { RandomGUID: !Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId ]]]] }
-      EndpointConfigName: !GetAtt LLMEndpointConfig.EndpointConfigName
-
-  LLMEndpointConfig:
-    Type: "AWS::SageMaker::EndpointConfig"
-    Properties:
-      EndpointConfigName: !Sub
-      - '${AppName}-flan-t5-xxl-endpoint-${RandomGUID}'
-      - { RandomGUID: !Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId ]]]] }
-      ProductionVariants:
-        - InitialInstanceCount: 1
-          InitialVariantWeight: 1.0
-          InstanceType: "ml.g5.12xlarge"
-          ModelName: !GetAtt LLMModel.ModelName
-          VariantName: !GetAtt LLMModel.ModelName
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W1200
-            reason: Solution does not have KMS encryption enabled by default
-
-  LLMModel:
-    Type: "AWS::SageMaker::Model"
-    Properties:
-      ModelName: !Sub
-      - '${AppName}-flan-t5-xxl-model-${RandomGUID}'
-      - { RandomGUID: !Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId ]]]] }
-      PrimaryContainer:
-        ModelDataUrl: !Sub "s3://jumpstart-cache-prod-${AWS::Region}/huggingface-infer/prepack/v1.0.1/infer-prepack-huggingface-text2text-flan-t5-xxl.tar.gz"
-        Image: !Sub "763104351884.dkr.ecr.${AWS::Region}.amazonaws.com/pytorch-inference:1.12.0-gpu-py38"
-        Environment: {"TS_DEFAULT_WORKERS_PER_MODEL": "1"}
-        Mode: "SingleModel"
-      ExecutionRoleArn: !GetAtt Role.Arn
-
-  EmbeddingEndpoint:
-    Type: "AWS::SageMaker::Endpoint"
-    Properties:
-      EndpointName: !Sub
-      - '${AppName}-gpt-j-6b-endpoint-${RandomGUID}'
-      - { RandomGUID: !Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId ]]]] }
-      EndpointConfigName: !GetAtt EmbeddingEndpointConfig.EndpointConfigName
-
-  EmbeddingEndpointConfig:
-    Type: "AWS::SageMaker::EndpointConfig"
-    Properties:
-      EndpointConfigName: !Sub
-      - '${AppName}-gpt-j-6b-endppoint-${RandomGUID}'
-      - { RandomGUID: !Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId ]]]] }
-      ProductionVariants:
-        - InitialInstanceCount: 1
-          InitialVariantWeight: 1.0
-          InstanceType: "ml.g5.24xlarge"
-          ModelName: !GetAtt EmbeddingModel.ModelName
-          VariantName: !GetAtt EmbeddingModel.ModelName
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W1200
-            reason: Solution does not have KMS encryption enabled by default
-
-  EmbeddingModel:
-    Type: "AWS::SageMaker::Model"
-    Properties:
-      ModelName: !Sub
-      - '${AppName}-gpt-j-6b-model-${RandomGUID}'
-      - { RandomGUID: !Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId ]]]] }
-      PrimaryContainer:
-        ModelDataUrl: !Sub "s3://jumpstart-cache-prod-${AWS::Region}/huggingface-infer/prepack/v1.0.0/infer-prepack-huggingface-textembedding-gpt-j-6b.tar.gz"
-        Image: !Sub "763104351884.dkr.ecr.${AWS::Region}.amazonaws.com/pytorch-inference:1.12.0-gpu-py38"
-        Environment: {"TS_DEFAULT_WORKERS_PER_MODEL": "2"}
-        Mode: "SingleModel"
-      ExecutionRoleArn: !GetAtt Role.Arn
 
   APIGateway:
       Type: "AWS::ApiGateway::RestApi"
@@ -328,13 +281,11 @@ Resources:
     Properties:
       FunctionName: !Ref LambdaFunctionName
       Description: Lambda function for providing an LLM app (text generation, RAG) endpoint.
-      Runtime: python3.9
       Code:
-        S3Bucket: !FindInMap [RegionMap, !Ref "AWS::Region", BUCKET]
-        S3Key: !FindInMap [RegionMap, !Ref "AWS::Region", KEY]
-      Handler: app.main.handler
-      MemorySize: 512
-      Timeout: 60
+        ImageUri: !Ref ContainerImageURI
+      MemorySize: 256
+      PackageType: "Image"
+      Timeout: 30
       Role: !GetAtt LambdaIAMRole.Arn
       Tags: 
         -
@@ -342,12 +293,12 @@ Resources:
           Value: !Ref AppName
         -
           Key: Version
-          Value: v3
+          Value: v1
       Environment:
         Variables:
-          TEXT2TEXT_ENDPOINT_NAME: !GetAtt  LLMEndpoint.EndpointName
-          EMBEDDING_ENDPOINT_NAME: !GetAtt  EmbeddingEndpoint.EndpointName
-          OPENSEARCH_SECRET: !Ref OpenSearchSecret
+          API_STAGE: !Ref APIStage
+          BWB_ENDPOINT_URL: !Ref BedrockEndPointUrl
+          BWB_REGION_NAME: !Ref BedRockRegion
           OPENSEARCH_DOMAIN_ENDPOINT: !GetAtt OpenSearchServiceDomain.DomainEndpoint
           OPENSEARCH_INDEX: !Ref OpenSearchIndexName
           APP_NAME: !Ref AppName
@@ -396,18 +347,12 @@ Resources:
                   - "logs:PutLogEvents"
                 Effect: "Allow"
                 Resource: "*"
-              - Sid: AllowSageMakerInvoke
+              - Sid: Bedrockaccess
                 Effect: Allow
                 Action:
-                  - sagemaker:InvokeEndpoint
-                Resource: !Sub "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/*"
-              - Sid: ReadSecretManagerSecret
-                Effect: Allow
-                Action:
-                  - secretsmanager:GetSecretValue
-                Resource: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:*"
-                
-          PolicyName: "lambdaVPC"
+                  - bedrock:*
+                Resource: "*"  
+          PolicyName: "lambdaBedrock"
       
 
   lambdaLogGroup:
@@ -447,14 +392,7 @@ Outputs:
         - !GetAtt NotebookInstance.NotebookInstanceName
         - '?view=classic'
 
-  LLMEndpointName:
-    Description: Name of the LLM endpoint
-    Value: !GetAtt LLMEndpoint.EndpointName
-
-  EmbeddingEndpointName:
-    Description: Name of the LLM endpoint
-    Value: !GetAtt EmbeddingEndpoint.EndpointName
-  
+ 
   OpenSearchSecret:
     Description: Name of the OpenSearch secret in Secrets Manager
     Value: !Ref OpenSearchSecret

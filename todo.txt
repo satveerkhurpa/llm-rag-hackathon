@@ -1,0 +1,1 @@
+Change IAM role to read from a specific S3 bucket and not have fuyllAmazonS3FullAccess - Done
