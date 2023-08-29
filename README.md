@@ -1,4 +1,4 @@
-# Gen-AI Labs Hackathon
+# QnA with Bedrock and RAG using Langchain
 
 Use case : Build a QnA bot for an Enterprise customer using RAG and AWS Bedrock with Amazon OpenSearch as the vector store.
 
@@ -23,7 +23,7 @@ The code in this repo is organized into the following sub-folders, each having i
 ```.
 ├── README.md
 ├── cloudformation/
-├── bopensearch-data-ingestion/
+├── opensearch-data-ingestion/
 ├── rag/api
 ├── rag/app
 ├── rag/utilities
@@ -73,6 +73,7 @@ export BedRockRegion=$AWS_REGION
 ```
 
 ### Deploy the Cloudformation stack.
+The cloudformation template will create a SageMaker Notebook called `aws-llm-rag-hackathon`, an IAM role for the SageMaker Notebook instance, deploy the RAG endpoint as a Lambda container along with an execution role and expose the lambda endpoint using an API gateway endpoint via a proxy.
 
 ```
 cd ../../cloudformation
@@ -107,6 +108,31 @@ curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_EN
   "users" : [ "opensearchuser" ]
 }'
 ```
+
+### Installation
+1. Once the cloudformation stack has been created successfully, open the Outputs tab of the stack and note the URL for the API Gateway endpoint. (Key : LLMAppAPIEndpoint). We will be needing it to run a RAG query later on.
+
+2. Open the `aws-llm-rag-hackathon` SageMaker Notebook created by the cloudformation template and then find the `qa_bedrock.ipynb` file and double click on it.
+
+3. Do a `Run All` for this notebook OR execute each cell one by one and review results. It will ingest the documents as embeddings into the OpenSearch cluster and once that is done, we are not ready to ask some questions via the `/llm` endpoint of the Lambda function
+
+4. Query the API Gateway `/llm` endpoint using the following command. The endpoint can be seen on the Outputs tab of the cloudformation stack, it is value of the `LLMAppAPIEndpoint` key.
+
+```
+curl -X POST "https://replace-with-your-api-gw-url/prod/api/v1/llm/rag" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"q\":\"Which versions of XGBoost does SageMaker support?\"}"
+```
+
+5. Run the `streamlit` app for the QnA bot on SageMaker Studio. On SageMaker Studio create a new Terminal and run the following commands.
+
+```
+git clone https://github.com/satveerkhurpa/llm-rag-hackathon.git   
+cd llm-rag-hackathon/rag/app
+pip install -r requirements.txt
+streamlit run webapp.py    
+```
+
+This will start a streamlit app on SageMaker Studio, you can access the app by opening the following URL in the new browser tab.
+*https://replace-with-your-studio-domain.studio.replace-with-your-region.sagemaker.aws/jupyter/default/proxy/8501/webapp*
 
 ## Clean up
 To avoid incurring future charges, delete the resources. You can do this by deleting the CloudFormation template used to create the resources for this sample application.
