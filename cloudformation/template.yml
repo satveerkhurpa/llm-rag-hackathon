@@ -372,3 +372,11 @@ Outputs:
   LLMAppAPIEndpoint:
     Description: "API (prod) stage endpoint"
     Value: !Sub "https://${APIGateway}.execute-api.${AWS::Region}.amazonaws.com/${ApiStageName}/"
+
+  SageMakerIAMRole:
+    Description: The IAM role used by the Sagemaker notebook.
+    Value:  !GetAtt Role.Arn
+  
+  LambdaIAMRole:
+    Description:  The execution role for thelambda function.
+    Value: !GetAtt LambdaIAMRole.Arn 

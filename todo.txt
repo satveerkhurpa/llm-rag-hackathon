@@ -1,4 +1,4 @@
-How to add a backend role to AWS OPensearch using Cloudformation ?
+Fine grained backend role for Opensearch.
 Update individual readme.md
 
 
