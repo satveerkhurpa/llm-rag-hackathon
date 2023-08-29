@@ -166,7 +166,7 @@ Resources:
                 Effect: Allow
                 Action:
                   - "s3:*"
-                Resource: "arn:aws:s3:::arxiv-docs-21082003"
+                Resource: "arn:aws:s3:::arxiv-docs-21082003/*"
               - Sid : BedrockAccess
                 Effect: Allow
                 Action:
