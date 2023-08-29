@@ -128,11 +128,13 @@ curl -X POST "https://replace-with-your-api-gw-url/prod/api/v1/llm/rag" -H  "acc
 git clone https://github.com/satveerkhurpa/llm-rag-hackathon.git   
 cd llm-rag-hackathon/rag/app
 pip install -r requirements.txt
-streamlit run rag_chatbot_app.py
+streamlit run rag_chatbot_app.py --server.port 8080
 ```
 
 This will start a streamlit app on SageMaker Studio, you can access the app by opening the following URL in the new browser tab.
-*https://replace-with-your-studio-domain.studio.replace-with-your-region.sagemaker.aws/jupyter/default/proxy/8501/webapp*
+*https://replace-with-your-studio-domain.studio.replace-with-your-region.sagemaker.aws/jupyter/default/proxy/8080/rag_chatbot_app*
+
+
 
 ## Clean up
 To avoid incurring future charges, delete the resources. You can do this by deleting the CloudFormation template used to create the resources for this sample application.
