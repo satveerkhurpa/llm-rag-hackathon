@@ -90,14 +90,13 @@ aws cloudformation deploy --template-file template.yml --stack-name $AppName \
 ```
 
 ### Configure OpenSearch access for SageMaker and the Lambda function.
-
+```
 export SageMakerIAMRole=$(aws cloudformation describe-stacks --stack-name $AppName --query "Stacks[0].Outputs[?OutputKey=='SageMakerIAMRole'].OutputValue" --output text)
 #echo $SageMakerIAMRole
 
 export LambdaIAMRole=$(aws cloudformation describe-stacks --stack-name $AppName --query "Stacks[0].Outputs[?OutputKey=='LambdaIAMRole'].OutputValue" --output text)
 #echo $LambdaIAMRole
 
-# Get the Amazon OpenSearch Endpoint
 export OS_ENDPOINT=$(aws cloudformation describe-stacks --stack-name $AppName --query "Stacks[0].Outputs[?OutputKey=='OpenSearchDomainEndpoint'].OutputValue" --output text)
 $echo $OS_ENDPOINT
 
@@ -106,7 +105,7 @@ curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_EN
 {
   "backend_roles" : [ "'${SageMakerIAMRole}'","'${LambdaIAMRole}'" ]
 }'
-
+```
 
 ## Clean up
 To avoid incurring future charges, delete the resources. You can do this by deleting the CloudFormation template used to create the resources for this sample application.
