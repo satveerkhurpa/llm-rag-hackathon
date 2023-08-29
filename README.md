@@ -103,7 +103,8 @@ $echo $OS_ENDPOINT
 # Update the Opensearch internal database
 curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_ENDPOINT}/_plugins/_security/api/rolesmapping/all_access" -H 'Content-Type: application/json' -d'
 {
-  "backend_roles" : [ "'${SageMakerIAMRole}'","'${LambdaIAMRole}'" ]
+  "backend_roles" : [ "'${SageMakerIAMRole}'","'${LambdaIAMRole}'" ],
+  "users" : [ "opensearchuser" ]
 }'
 ```
 
