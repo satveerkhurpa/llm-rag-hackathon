@@ -64,7 +64,7 @@ Important : Update the value for the parameter *OpenSearchPassword*
 export OpenSearchUsername="opensearchuser"
 export OpenSearchPassword="<<Enter a password as per Opensearch requirements>"
 export AppName="llm-rag-hackathon"
-export OpenSearchIndexName="llm-rag-hackathon_embeddings"
+export OpenSearchIndexName="llm-rag-hackathon"
 export LambdaFunctionName="LLMRagapp"
 export APIGatewayName="LLMRagAPIGW"
 export SageMakerNotebookName="aws-llm-rag-hackathon"
@@ -128,7 +128,7 @@ curl -X POST "https://replace-with-your-api-gw-url/prod/api/v1/llm/rag" -H  "acc
 git clone https://github.com/satveerkhurpa/llm-rag-hackathon.git   
 cd llm-rag-hackathon/rag/app
 pip install -r requirements.txt
-streamlit run webapp.py    
+streamlit run rag_chatbot_app.py
 ```
 
 This will start a streamlit app on SageMaker Studio, you can access the app by opening the following URL in the new browser tab.

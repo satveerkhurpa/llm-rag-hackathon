@@ -25,8 +25,6 @@ CFN_STACK_NAME: str = "llm-rag-hackathon"
 outputs = get_cfn_outputs(CFN_STACK_NAME)
 api: str = outputs.get("LLMAppAPIEndpoint")
 
-print(f"api_endpoint={api}")
-
 ####################
 # Streamlit code
 ####################
@@ -38,7 +36,7 @@ st.title("👩‍💻 Virtual assistant for a knowledge base") #page title
 st.subheader(f" Powered by :blue[Bedrock Titan] for text generation and :blue[Bedrock Titan] for embeddings")
 
 
-#api = "https://160wg7g56l.execute-api.us-west-2.amazonaws.com/prod/llm?query="
+api += "/llm?query="
 
 
 #input elements

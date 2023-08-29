@@ -67,8 +67,8 @@ def get_vectorstore(bedrock_embeddings):
     awsauth = AWS4Auth(credentials.access_key, credentials.secret_key, aws_region, service, session_token=credentials.token)
     
     #Bedrock embeddings
-    opensearch_index=os.environ.get("opensearch_index")
-    opensearch_domain_endpoint=os.environ.get("opensearch_domain_endpoint")
+    opensearch_index=os.environ.get("OPENSEARCH_INDEX")
+    opensearch_domain_endpoint=os.environ.get("OPENSEARCH_DOMAIN_ENDPOINT")
     
     docsearch = OpenSearchVectorSearch(index_name=opensearch_index,
                                    embedding_function=bedrock_embeddings,
@@ -93,10 +93,10 @@ def get_llm_details():
     )
     
     model_kwargs =  { 
-        "maxTokenCount": 1024, 
+        "maxTokenCount": 4096, 
         "stopSequences": [], 
         "temperature": 0, 
-        "topP": 0.9 
+        "topP": 1 
     }
     
     

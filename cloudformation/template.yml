@@ -67,7 +67,7 @@ Parameters:
     NoEcho: 'true'
     Type: String
   OpenSearchIndexName:
-    Default: llm-rag-hackathon_embeddings
+    Default: llm-rag-hackathon
     Type: String    
     Description: Name of the OpenSearch index for storing embeddings.
   AppName:
@@ -280,7 +280,7 @@ Resources:
           API_STAGE: !Ref APIStage
           BWB_ENDPOINT_URL: !Ref BedrockEndPointUrl
           BWB_REGION_NAME: !Ref BedRockRegion
-          OPENSEARCH_DOMAIN_ENDPOINT: !GetAtt OpenSearchServiceDomain.DomainEndpoint
+          OPENSEARCH_DOMAIN_ENDPOINT: !join [ '', "https://", !GetAtt OpenSearchServiceDomain.DomainEndpoint ]
           OPENSEARCH_INDEX: !Ref OpenSearchIndexName
           APP_NAME: !Ref AppName
 
