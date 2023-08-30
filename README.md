@@ -122,7 +122,7 @@ curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_EN
 curl -X POST "https://replace-with-your-api-gw-url/prod/api/v1/llm/rag" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"q\":\"Which versions of XGBoost does SageMaker support?\"}"
 ```
 
-5. Run the `streamlit` app for the QnA bot on SageMaker Studio. On SageMaker Studio create a new Terminal and run the following commands.
+5. Run the `streamlit` app for the QnA bot on the platform of your choice. (Cloud9, SageMaker Studio). Here is an example of running it on Cloud9.
 
 ```
 git clone https://github.com/satveerkhurpa/llm-rag-hackathon.git   
@@ -131,13 +131,15 @@ pip install -r requirements.txt
 streamlit run rag_chatbot_app.py --server.port 8080
 ```
 
-This will start a streamlit app on SageMaker Studio, you can access the app by opening the following URL in the new browser tab.
-*https://replace-with-your-studio-domain.studio.replace-with-your-region.sagemaker.aws/jupyter/default/proxy/8080/rag_chatbot_app*
-
+This will start a streamlit app on the platform of your choice. (Cloud9, SageMaker Studio).
 
 
 ## Clean up
 To avoid incurring future charges, delete the resources. You can do this by deleting the CloudFormation template used to create the resources for this sample application.
+
+```
+aws cloudformation delete-stack --stack-name $AppName
+```
 
 
 
