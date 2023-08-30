@@ -3,12 +3,12 @@
 Use case : Build a QnA bot for an Enterprise customer using RAG and AWS Bedrock with Amazon OpenSearch as the vector store.
 
 Use case description :
-*Build a highly accurate QnA bot for Enterprise customers using Amazon Bedrock and RAG(Retrieval Augmented Generation) with Amazon OpenSearch as the vector store.
-*Improve search results - Using OpenSearch k-NN search, by providing more relevant and accurate results to the users.
-*Users can use natural language queries to find the information they are looking for.
-*Reinvent User Experience using Generative AI and domain data to unlock insights
-*Build an accurate and scalable Enterprise Search Engine with GenAI
-*Ingest different document formats commonly used by Enterprise customers like pdfs, MS Word, html files etc. to aid Retrieval Augmented Generation.
+* Build a highly accurate QnA bot for Enterprise customers using Amazon Bedrock and RAG(Retrieval Augmented Generation) with Amazon OpenSearch as the vector store.
+* Using OpenSearch k-NN search, by providing more relevant and accurate results to the users.
+* Users can use natural language queries to find the information they are looking for.
+* Reinvent User Experience using Generative AI and domain data to unlock insights
+* Build an accurate and scalable Enterprise Search Engine with Gen-AI
+* Ingest different document formats commonly used by Enterprise customers like pdfs, MS Word, html files etc. to aid Retrieval Augmented Generation.
 
 ## Solution Architecture
 ![Solution Architecture](./images/Solution_architecture.png)
@@ -18,7 +18,7 @@ Use case description :
 
 This repository provides the source code for Large Language Model (LLM) based application that uses Retrieval Augmented Generation ( RAG ) with AWS Bedrock Titan model and AWS OpenSearch to provide relevant and accurate results to the users.
 
-The code in this repo is organized into the following sub-folders, each having its own README.md file.
+The code in this repo is organized into the following sub-folders.
 
 ```.
 ├── README.md
@@ -58,8 +58,8 @@ export CONTAINER_IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/lam
 
 ### Configure the Cloudformation stack.
 
-Update the values for the following parameters.
-Important : Update the value for the parameter *OpenSearchPassword*
+Update the values for the following parameters.<br/>
+`Important` : Update the value for the parameter *OpenSearchPassword*
 ```
 export OpenSearchUsername="opensearchuser"
 export OpenSearchPassword="<<Enter a password as per Opensearch requirements>"
@@ -90,7 +90,7 @@ aws cloudformation deploy --template-file template.yml --stack-name $AppName \
      --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset
 ```
 
-### Configure OpenSearch access for SageMaker and the Lambda function.
+### Configure OpenSearch access for SageMaker and the Lambda function using backend roles.
 ```
 export SageMakerIAMRole=$(aws cloudformation describe-stacks --stack-name $AppName --query "Stacks[0].Outputs[?OutputKey=='SageMakerIAMRole'].OutputValue" --output text)
 #echo $SageMakerIAMRole
@@ -116,10 +116,10 @@ curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_EN
 
 3. Do a `Run All` for this notebook OR execute each cell one by one and review results. It will ingest the documents as embeddings into the OpenSearch cluster and once that is done, we are not ready to ask some questions via the `/llm` endpoint of the Lambda function
 
-4. Query the API Gateway `/llm` endpoint using the following command. The endpoint can be seen on the Outputs tab of the cloudformation stack, it is value of the `LLMAppAPIEndpoint` key.
+4. Query the API Gateway `/llm` endpoint using the following commandor using your web browser. The endpoint can be seen on the Outputs tab of the cloudformation stack, it is value of the `LLMAppAPIEndpoint` key.
 
 ```
-curl -X POST "https://replace-with-your-api-gw-url/prod/api/v1/llm/rag" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"q\":\"Which versions of XGBoost does SageMaker support?\"}"
+curl -X POST "https://replace-with-your-api-gw-url/prod/llm/rag?query=<replace with your query>" -H  "accept: application/json" -H  "Content-Type: application/json" 
 ```
 
 5. Run the `streamlit` app for the QnA bot on the platform of your choice. (Cloud9, SageMaker Studio). Here is an example of running it on Cloud9.
