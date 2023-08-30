@@ -34,7 +34,7 @@ The code in this repo is organized into the following sub-folders.
 ### Clone the repo
 
 ```
-git clone https://github.com/satveerkhurpa/llm-rag-hackathon.git
+git clone git@ssh.gitlab.aws.dev:khurpas/llm-rag-hackathon.git
 cd llm-rag-hackathon/rag/api
 ```
 
