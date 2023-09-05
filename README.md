@@ -101,8 +101,28 @@ export LambdaIAMRole=$(aws cloudformation describe-stacks --stack-name $AppName 
 export OS_ENDPOINT=$(aws cloudformation describe-stacks --stack-name $AppName --query "Stacks[0].Outputs[?OutputKey=='OpenSearchDomainEndpoint'].OutputValue" --output text)
 $echo $OS_ENDPOINT
 
-# Update the Opensearch internal database
-curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_ENDPOINT}/_plugins/_security/api/rolesmapping/all_access" -H 'Content-Type: application/json' -d'
+# Create a new role *bulk_access* for bulk access in OpenSearch
+curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_ENDPOINT}/_plugins/_security/api/roles/bulk_access" -H 'Content-Type: application/json' -d'
+{
+  "cluster_permissions": [
+    "cluster_composite_ops",
+    "indices_monitor"
+  ],
+  "index_permissions": [{
+    "index_patterns": [
+      "llm-rag-*"
+    ],
+    "dls": "",
+    "fls": [],
+    "masked_fields": [],
+    "allowed_actions": [
+      "write"
+    ]
+  }]
+}'
+
+# Add the SageMaker IAM role and the Lambda IAM role mapped to bulk_access backend role in OpenSearch
+curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_ENDPOINT}/_plugins/_security/api/rolesmapping/bulk_access" -H 'Content-Type: application/json' -d'
 {
   "backend_roles" : [ "'${SageMakerIAMRole}'","'${LambdaIAMRole}'" ],
   "users" : [ "opensearchuser" ]

@@ -280,7 +280,7 @@ Resources:
           API_STAGE: !Ref APIStage
           BWB_ENDPOINT_URL: !Ref BedrockEndPointUrl
           BWB_REGION_NAME: !Ref BedRockRegion
-          OPENSEARCH_DOMAIN_ENDPOINT: !join [ '', "https://", !GetAtt OpenSearchServiceDomain.DomainEndpoint ]
+          OPENSEARCH_DOMAIN_ENDPOINT: !Join [ '', ['https://', !GetAtt OpenSearchServiceDomain.DomainEndpoint ]]
           OPENSEARCH_INDEX: !Ref OpenSearchIndexName
           APP_NAME: !Ref AppName
 
