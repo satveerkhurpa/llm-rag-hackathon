@@ -122,7 +122,7 @@ curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_EN
 }'
 
 # Add the SageMaker IAM role and the Lambda IAM role mapped to bulk_access backend role in OpenSearch
-curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_ENDPOINT}/_plugins/_security/api/rolesmapping/bulk_access" -H 'Content-Type: application/json' -d'
+curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_ENDPOINT}/_plugins/_security/api/rolesmapping/all_access" -H 'Content-Type: application/json' -d'
 {
   "backend_roles" : [ "'${SageMakerIAMRole}'","'${LambdaIAMRole}'" ],
   "users" : [ "opensearchuser" ]
