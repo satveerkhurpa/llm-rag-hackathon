@@ -55,7 +55,7 @@ Parameters:
     Default: 5432
     ConstraintDescription: 'Must be in the range [1150-65535]'
     MinValue: 1150
-    MaxValue: 65535
+    MaxValue: 65535  
 
 Resources:
 ## Create enhanced monitoring role
@@ -183,6 +183,19 @@ Resources:
       SubnetId: !Ref Subnet4
 
 # END VPC ------------------------------------------------------
+
+# Cloud9 Instance
+     
+  Cloud9Instance:
+    Type: AWS::Cloud9::EnvironmentEC2
+    Properties:
+      Name: !Sub ${TemplateName}-Cloud9-IDE
+      Description: Cloud9 IDE to support Generative AI with pgvector labs
+      AutomaticStopTimeMinutes: 240
+      SubnetId: !Ref Subnet1
+      InstanceType: m5.large
+      ImageId: amazonlinux-2-x86_64      
+
 
 # Aurora PostgreSQL -----------------------------------------------
 
