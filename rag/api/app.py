@@ -82,9 +82,10 @@ def get_vectorstore(bedrock_embeddings):
     
     
 def get_llm_details():
-    aws_region = os.environ.get("BWB_REGION_NAME")
+    AWS_REGION = os.environ.get("BWB_REGION_NAME")
     BEDROCK_ENDPOINT_URL = os.environ.get("BWB_ENDPOINT_URL")
-    BEDROCK_REGION = aws_region
+    LLM_MODEL_ID = os.environ.get("LLM_MODEL_ID")
+    BEDROCK_REGION = AWS_REGION
     
     boto3_bedrock = boto3.client(
         service_name='bedrock',
@@ -100,8 +101,9 @@ def get_llm_details():
     }
     
     
-    llm = Bedrock(model_id="amazon.titan-tg1-large", client=boto3_bedrock, model_kwargs=model_kwargs)
-    bedrock_embeddings = BedrockEmbeddings(client=boto3_bedrock)
+    llm = Bedrock(model_id=LLM_MODEL_ID, client=boto3_bedrock, model_kwargs=model_kwargs)
+    embed_model_id = os.environ.get("EMBED_MODEL_ID")
+    bedrock_embeddings = BedrockEmbeddings(client=boto3_bedrock,model_id=embed_model_id)
     return llm, bedrock_embeddings
     
 

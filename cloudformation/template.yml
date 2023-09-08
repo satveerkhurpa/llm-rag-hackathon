@@ -14,6 +14,8 @@ Metadata:
           - LambdaFunctionName
           - APIGatewayName
           - SageMakerNotebookName
+          - EmbedModeID
+          - LLMModelID
     ParameterLabels:      
       AppName:
         default: Name of the overall application
@@ -37,6 +39,10 @@ Metadata:
         default: The region of the Bedrock endpoint
       ContainerImageURI:
         default: The URI of the container Image from ECR
+      EmbedModeID:
+        default: The Model ID used for embeddings
+      LLMModelID:
+        default: The LLM Model ID
       
 Parameters:
   APIStage:
@@ -283,6 +289,8 @@ Resources:
           OPENSEARCH_DOMAIN_ENDPOINT: !Join [ '', ['https://', !GetAtt OpenSearchServiceDomain.DomainEndpoint ]]
           OPENSEARCH_INDEX: !Ref OpenSearchIndexName
           APP_NAME: !Ref AppName
+          LLM_MODEL_ID: !Ref LLMModelID
+          EMBED_MODEL_ID: !Ref EmbedModeID
 
   LambdaApiGatewayInvoke:
     Type: "AWS::Lambda::Permission"
