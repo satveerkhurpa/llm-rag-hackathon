@@ -24,6 +24,8 @@ The code in this repo is organized into the following sub-folders.
 ├── README.md
 ├── cloudformation/
 ├── opensearch-data-ingestion/
+├── opensearch-data-ingestion/bedrock
+├── opensearch-data-ingestion/model_hosted_on_sagemaker
 ├── rag/api
 ├── rag/app
 ├── rag/utilities
@@ -136,7 +138,7 @@ curl -sS -u "${OpenSearchUsername}:${OpenSearchPassword}" -XPUT "https://${OS_EN
 ### Installation
 1. Once the cloudformation stack has been created successfully, open the Outputs tab of the stack and note the URL for the API Gateway endpoint. (Key : LLMAppAPIEndpoint). We will be needing it to run a RAG query later on.
 
-2. Open the `aws-llm-rag-hackathon` SageMaker Notebook created by the cloudformation template and then find the `qa_bedrock.ipynb` file from the `opensearch-data-ingestion` folder and double click on it.
+2. Open the `aws-llm-rag-hackathon` SageMaker Notebook created by the cloudformation template and then find the `qa_bedrock.ipynb` file from the `opensearch-data-ingestion/bedrock` folder and double click on it.
 
 3. Do a `Run All` for this notebook OR execute each cell one by one and review results. It will ingest the documents as embeddings into the OpenSearch cluster and once that is done, we are not ready to ask some questions via the `/llm` endpoint of the Lambda function
 
