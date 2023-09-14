@@ -34,6 +34,10 @@ Parameters:
     Default: 10.215.40.0/24
     Type: String
 
+  DefaultCodeRepository:
+    Default: https://github.com/aws-samples/aurora-postgresql-pgvector.git
+    Type: String    
+
   DBEngineVersion:
     Type: String
     Default: 15.3
@@ -196,6 +200,68 @@ Resources:
       InstanceType: m5.large
       ImageId: amazonlinux-2-x86_64      
 
+# NOTEBOOK -----------------------------------------------------
+  NotebookInstance:
+    Type: AWS::SageMaker::NotebookInstance
+    Properties:
+      InstanceType: "ml.t2.large"
+      RoleArn: !GetAtt ExecutionRole.Arn
+      SubnetId: !Ref Subnet1
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      DefaultCodeRepository: !Ref DefaultCodeRepository
+      VolumeSizeInGB: 50
+  
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Notebook Instance Security Group
+      VpcId: !Ref VPC
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: 0.0.0.0/0
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref DBPort
+          ToPort: !Ref DBPort
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  ExecutionRole: 
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "sagemaker.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+        - arn:aws:iam::aws:policy/SecretsManagerReadWrite
+        - arn:aws:iam::aws:policy/AmazonRDSReadOnlyAccess
+      Policies:
+        - 
+          PolicyName: "s3_access"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - 
+                Effect: "Allow"
+                Action: 
+                  - "s3:PutBucketPolicy"
+                  - "s3:DeleteBucket"
+                Resource: "arn:aws:s3:::sagemaker-*"                
+
+# END NOTEBOOK -------------------------------------------------
 
 # Aurora PostgreSQL -----------------------------------------------
 

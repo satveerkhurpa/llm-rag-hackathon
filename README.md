@@ -73,7 +73,7 @@ export SageMakerNotebookName="aws-llm-rag-hackathon"
 export BedrockEndPointUrl="https://prod.us-west-2.frontend.bedrock.aws.dev"
 export BedRockRegion=$AWS_REGION
 export LLM_MODEL_ID="amazon.titan-tg1-large"
-export EMBED_MODEL_ID="amazon.titan-embed-g1-text-02""
+export EMBED_MODEL_ID="amazon.titan-embed-g1-text-02"
 ```
 
 ### Deploy the Cloudformation stack.
