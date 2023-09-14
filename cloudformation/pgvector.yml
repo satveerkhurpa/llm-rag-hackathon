@@ -259,7 +259,23 @@ Resources:
                 Action: 
                   - "s3:PutBucketPolicy"
                   - "s3:DeleteBucket"
-                Resource: "arn:aws:s3:::sagemaker-*"                
+                Resource: "arn:aws:s3:::sagemaker-*"   
+        -
+          PolicyName: CustomNotebookAccess
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: ReadFromS3Bucket
+                Effect: Allow
+                Action:
+                  - "s3:*"
+                Resource: "arn:aws:s3:::arxiv-docs-21082003/*"
+              - Sid : BedrockAccess
+                Effect: Allow
+                Action:
+                  - "bedrock:*"
+                Resource: "*"
+               
 
 # END NOTEBOOK -------------------------------------------------
 
@@ -404,6 +420,14 @@ Resources:
 # end Aurora PostgreSQL -----------------------------------------------
 
 Outputs:
+
+  NotebookInstanceURL:
+    Description: SageMaker Notebook Instance URL
+    Value: !Join
+      - ''
+      - - !Sub 'https://console.aws.amazon.com/sagemaker/home?region=${AWS::Region}#/notebook-instances/openNotebook/'
+        - !GetAtt NotebookInstance.NotebookInstanceName
+        - '?view=classic'
 
   DBEndpoint:
     Description: 'Aurora PostgreSQL Endpoint'
