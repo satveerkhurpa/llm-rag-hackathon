@@ -1,0 +1,7 @@
+python-dotenv
+psycopg
+psycopg2-binary
+pgvector
+PyPDF2
+unstructured
+unstructured[pdf]
